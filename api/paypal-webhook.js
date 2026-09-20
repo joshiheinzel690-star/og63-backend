@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     }
 
     const auth = Buffer.from(
-      `${clientId}:${clientSecret}`
+      clientId + ":" + clientSecret
     ).toString("base64");
 
     const tokenResponse = await fetch(
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       {
         method: "POST",
         headers: {
-          Authorization: `Basic ${auth}`,
+          Authorization: "Basic " + auth,
           "Content-Type": "application/x-www-form-urlencoded"
         },
         body: "grant_type=client_credentials"
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${tokenData.access_token}`,
+          Authorization: "Bearer " + tokenData.access_token,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -75,15 +75,12 @@ export default async function handler(req, res) {
       });
     }
 
-    console.log(
-      "Verified PayPal webhook:",
-      req.body?.event_type
-    );
-
     return res.status(200).json({
       received: true,
       verified: true,
-      event: req.body?.event_type || null
+      event: req.body && req.body.event_type
+        ? req.body.event_type
+        : null
     });
   } catch (error) {
     console.error("PayPal webhook error:", error);
