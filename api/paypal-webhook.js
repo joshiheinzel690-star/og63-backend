@@ -1,0 +1,13 @@
+export default function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      error: "Method not allowed"
+    });
+  }
+
+  return res.status(200).json({
+    received: true,
+    verified: false,
+    message: "Webhook placeholder only. Payment verification is not configured."
+  });
+}
